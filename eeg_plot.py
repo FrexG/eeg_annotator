@@ -118,7 +118,4 @@ class EEGPlot:
 
         # just plot on each exes for now
         for i in range(signal.shape[0]):
-            axes.plot(
-                t,
-                i * self.scale_factor + signal[i, :signal_length],
-            )
+            axes.plot(t, i * self.scale_factor + signal[i, :signal_length], linewidth=1)
