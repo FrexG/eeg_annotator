@@ -26,6 +26,8 @@ config = Config()
 
 
 class LabelDialog(QDialog):
+    """Label selection dialog box"""
+
     def __init__(self, parent):
         super(LabelDialog, self).__init__()
         self.setWindowTitle("Label")
@@ -35,6 +37,8 @@ class LabelDialog(QDialog):
 
         layout = QVBoxLayout()
         label_combobox = QComboBox()
+        # edit class labels in config.py
+
         label_combobox.addItems(config.diagnosis)
         label_combobox.currentIndexChanged.connect(self.index_changed)
 
@@ -87,8 +91,7 @@ class EEGPlotWidget(QWidget):
         self.show()
 
     def show_plot(self, raw_eeg, signal_duration):
-        # Plot the raw_eeg in the figure
-        # n_subplots = len(raw_eeg.info["ch_names"])
+        """Plot the raw_eeg in the figure"""
         self.signal_duration = signal_duration
         self.fig.clear()
         self.axes = self.eep.create_axes(self.fig, raw_eeg)
@@ -104,19 +107,21 @@ class EEGPlotWidget(QWidget):
         self.canvas.setFocus()
 
     def on_key_press(self, event):
-        """Pan"""
+        """Pan figure using left/right arrow keys"""
         # Get the current x-limits of the plot
         x_lim = self.axes.get_xlim()
         print(f"{x_lim=}")
         if event.key == "left":
-            x_lim_left = max(0, x_lim[0] - 10)
-            x_lim_right = max(self.eep.max_x_lim, x_lim[1] - 10)
+            x_lim_left = max(0, x_lim[0] - config.pan_ammount)
+            x_lim_right = max(self.eep.max_x_lim, x_lim[1] - config.pan_ammount)
             # set teh new x_limits of the plot
             self.axes.set_xlim(x_lim_left, x_lim_right)
 
         if event.key == "right":
-            x_lim_left = min(self.signal_duration - 10, x_lim[0] + 10)
-            x_lim_right = min(self.signal_duration, x_lim[1] + 10)
+            x_lim_left = min(
+                self.signal_duration - config.pan_ammount, x_lim[0] + config.pan_ammount
+            )
+            x_lim_right = min(self.signal_duration, x_lim[1] + config.pan_ammount)
             # set the new x_limits of the plot
             self.axes.set_xlim(x_lim_left, x_lim_right)
         self.canvas.draw()

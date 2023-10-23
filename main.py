@@ -1,3 +1,10 @@
+"""
+EEG annotation desktop GUI  
+    @author: Fraol Gelana Waldamichael
+    @institute: Ethiopian Artficial Intelligence Institute
+    @year: Oct, 2023
+"""
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (

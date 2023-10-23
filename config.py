@@ -1,11 +1,12 @@
 from dataclasses import dataclass
+from typing import List, Dict, Tuple
 
 
 @dataclass()
 class Config:
-    app_name = " Annotate"
+    app_name: str = "Annotate"
     # diagnosis options
-    diagnosis = ["BCKG", "SCZ"]
+    diagnosis = ("BCKG", "SCZ")
     montage_pairs = {
         "Fp1-F7": ("Fp1", "F7"),
         "F7-T3": ("F7", "T3"),
@@ -30,4 +31,5 @@ class Config:
         "C4-P4": ("C4", "P4"),
         "P4-O2": ("P4", "O2"),
     }
-    num_channels = len(montage_pairs)
+    num_channels: int = len(montage_pairs)
+    pan_ammount: int = 10
