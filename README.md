@@ -29,6 +29,46 @@ EEG annotation tool written in Python and PyQt6. It uses MNE Python for EEG sign
 
 You can also change the bipolar montage type or add/remove labels in the `config.py` file
 
+## Annotation
+- The annotation file is a `.json` file with the same name as the EEG file and is saved in the same directory as the source EEG file.
+- Each annotation file contains a list of dictionaries each describing a single selected region.
+
+``` json 
+# example_annotation.json
+
+[
+    {
+        "channels": [
+            "P4-O2"
+        ],
+        "start_time": 1002,
+        "stop_time": 1006,
+        "onset": "SCZ"
+    },
+    {
+        "channels": [
+            "F4-C4",
+            "C4-P4",
+            "P4-O2"
+        ],
+        "start_time": 530,
+        "stop_time": 539,
+        "onset": "SCZ"
+    },
+    {
+        "channels": [
+            "Fp2-F4",
+            "F4-C4",
+            "C4-P4",
+            "P4-O2"
+        ],
+        "start_time": 1041,
+        "stop_time": 1045,
+        "onset": "SCZ"
+    }
+]
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
