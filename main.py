@@ -61,7 +61,9 @@ class EEGAnnotator(QMainWindow):
     def open_file(self):
         self.eeg_plot_widget.fig.clear()
         # Open a file dialog
-        self.filename = QFileDialog.getOpenFileName(self)[0]
+        file_filters = ".eeg/.EEG files (*.eeg *.EEG);;.edf/.EDF files (*.edf *.EDF)"
+
+        self.filename = QFileDialog.getOpenFileName(self, filter=file_filters)[0]
 
         if not self.filename:
             return
