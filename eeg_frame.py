@@ -65,6 +65,7 @@ class EEGPlotWidget(QWidget):
         self.controller = controller
         self.eep = eep
         self.annotation = []
+        self.text_annotations = []
 
         self.selectors = []
         layout = QVBoxLayout()
@@ -202,15 +203,22 @@ class EEGPlotWidget(QWidget):
             ]
 
             if label_selection_dialog.exec():
+                class_label = config.diagnosis[self.selected_label]
                 self.annotation.append(
                     {
                         "channels": selected_channels,
                         "start_time": round(self.x1),
                         "stop_time": round(self.x2),
-                        "onset": config.diagnosis[self.selected_label],
+                        "onset": class_label,
                     }
                 )
+                # set the text of the rectangle, the label class
+                text_ann = self.axes.annotate(
+                    class_label, (self.x1, self.y2), weight="bold", fontsize=12
+                )
+                self.text_annotations.append(text_ann)
                 self.axes.add_patch(rect)
+
                 print(f"{self.annotation=}")
 
             self.canvas.draw()
@@ -221,6 +229,10 @@ class EEGPlotWidget(QWidget):
             self.axes.patches.pop()
             self.axes.patches.pop()
             self.annotation.pop()
+            last_annotation = self.text_annotations[-1]
+            last_annotation.remove()
+
+            self.text_annotations.pop()
             self.canvas.draw()
 
     def box_select(self):
