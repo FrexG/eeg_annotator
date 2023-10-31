@@ -223,6 +223,47 @@ class EEGPlotWidget(QWidget):
 
             self.canvas.draw()
 
+    def render_saved_annotations(self):
+        if len(self.annotation) == 0:
+            # do nothing
+            return
+
+        montage_list = list(config.montage_pairs.keys())
+
+        for selection in self.annotation:
+            first_channel = (
+                montage_list.index(selection["channels"][-1]) * self.eep.scale_factor
+            )
+            last_channel = (
+                montage_list.index(selection["channels"][0]) * self.eep.scale_factor
+            )
+
+            rect = Rectangle(
+                (
+                    selection["start_time"],
+                    first_channel,
+                ),
+                selection["stop_time"] - selection["start_time"],
+                last_channel - first_channel,
+                edgecolor="blue",
+                linestyle="solid",
+                facecolor="none",
+                linewidth=2,
+                zorder=10,
+            )
+            self.axes.annotate(
+                selection["onset"],
+                (selection["start_time"], first_channel),
+                weight="bold",
+                fontsize=12,
+            )
+
+            self.axes.add_patch(rect)
+
+        self.canvas.draw()
+
+        pass
+
     def undo_selection(self):
         if len(self.annotation):
             self.rect_selector = None

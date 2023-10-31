@@ -122,6 +122,7 @@ class EEGAnnotator(QMainWindow):
             # set the annotation
             self.eeg_plot_widget.annotation = annotation
             self.eeg_plot_widget.show_plot(self.raw_eeg, self.signal_duration)
+            self.eeg_plot_widget.render_saved_annotations()
 
 
 app = QApplication([])
