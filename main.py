@@ -45,8 +45,7 @@ from eeg_frame import EEGPlotWidget
 
 config = Config()
 
-
-class EEGAnnotator(QMainWindow):
+class EEGAnnotator(QMainWindow): 
     """EEG Annotator main window"""
 
     def __init__(self):
@@ -101,6 +100,7 @@ class EEGAnnotator(QMainWindow):
 
         if self.raw_eeg:
             self.control_toolbar.draw_selection_btn.setEnabled(True)
+            self.control_toolbar.save_btn.setEnabled(True)
             self.control_toolbar.show_controls(self.signal_duration)
             self.eeg_plot_widget.show_plot(self.raw_eeg, self.signal_duration)
 

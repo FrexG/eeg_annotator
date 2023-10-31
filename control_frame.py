@@ -16,6 +16,7 @@ class ControlToolBar(QToolBar):
         self.save_btn = QPushButton("Save Annotation")
         self.save_btn.setIcon(QIcon("./icons/diskette.png"))
         self.save_btn.clicked.connect(self.on_save_clicked)
+        self.save_btn.setEnabled(False)
 
         self.undo_btn = QPushButton("Undo")
         self.undo_btn.setIcon(QIcon("./icons/undo.png"))
