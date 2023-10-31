@@ -269,9 +269,11 @@ class EEGPlotWidget(QWidget):
             return
         # get the directory of the EEG file
         eeg_directory = os.path.dirname(self.controller.filename)
+        print(f"{eeg_directory=}")
         # get the filename
-        file_name = os.path.basename(eeg_directory).strip().split(".")[0]
-        print(file_name)
+        file_name = os.path.basename(self.controller.filename).strip().split(".")[0]
+        print(f"{file_name=}")
+
         with open(
             os.path.join(eeg_directory, f"{file_name}.json"), "w"
         ) as annotation_json:
