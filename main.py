@@ -25,6 +25,8 @@ EEG annotation desktop GUI
     @author: Fraol Gelana Waldamichael
     @year: Oct, 2023
 """
+import os
+import json
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction
@@ -45,7 +47,8 @@ from eeg_frame import EEGPlotWidget
 
 config = Config()
 
-class EEGAnnotator(QMainWindow): 
+
+class EEGAnnotator(QMainWindow):
     """EEG Annotator main window"""
 
     def __init__(self):
@@ -88,6 +91,19 @@ class EEGAnnotator(QMainWindow):
         if not self.filename:
             return
 
+        # check if annotation json file already exists
+        # annotation file has the same name as the eeg file
+        work_dir = os.path.dirname(self.filename)
+        eeg_file_name = os.path.basename(self.filename).strip().split(".")[0]
+        annotation = []
+
+        annotation_file_path = f"{work_dir}/{eeg_file_name}.json"
+
+        if os.path.exists(annotation_file_path):
+            # read contents of the json file
+            with open(annotation_file_path, "r") as f:
+                annotation = json.load(f)
+
         if self.filename.lower().strip().endswith(".edf"):
             self.raw_eeg, self.signal_duration = self.eep.read_edf(
                 self.filename.strip(), config.montage_pairs
@@ -102,6 +118,9 @@ class EEGAnnotator(QMainWindow):
             self.control_toolbar.draw_selection_btn.setEnabled(True)
             self.control_toolbar.save_btn.setEnabled(True)
             self.control_toolbar.show_controls(self.signal_duration)
+
+            # set the annotation
+            self.eeg_plot_widget.annotation = annotation
             self.eeg_plot_widget.show_plot(self.raw_eeg, self.signal_duration)
 
 
