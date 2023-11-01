@@ -52,7 +52,6 @@ class LabelDialog(QDialog):
 
     def index_changed(self, i):
         self.label_idx = i
-        print("Index Changed")
 
     def ok_pressed(self):
         self.parent.selected_label = self.label_idx
@@ -92,7 +91,9 @@ class EEGPlotWidget(QWidget):
         self.show()
 
     def show_plot(self, raw_eeg, signal_duration):
-        """Plot the raw_eeg in the figure"""
+        """
+        Plot the raw eeg in the figure
+        """
         self.signal_duration = signal_duration
         self.fig.clear()
         self.axes = self.eep.create_axes(self.fig, raw_eeg)
@@ -102,16 +103,17 @@ class EEGPlotWidget(QWidget):
 
     def on_enter_event(self, _):
         """
-        set focus on canvas, needed for capturing
-        key press events.
+        Set focus on canvas, needed for capturing key press events.
         """
         self.canvas.setFocus()
 
     def on_key_press(self, event):
-        """Pan figure using left/right arrow keys"""
+        """
+        Pan figure using left/right arrow keys
+        """
         # Get the current x-limits of the plot
         x_lim = self.axes.get_xlim()
-        print(f"{x_lim=}")
+
         if event.key == "left":
             x_lim_left = max(0, x_lim[0] - config.pan_ammount)
             x_lim_right = max(self.eep.max_x_lim, x_lim[1] - config.pan_ammount)
@@ -128,7 +130,9 @@ class EEGPlotWidget(QWidget):
         self.canvas.draw()
 
     def attach_selector(self):
-        """Attach a rectangle selector to an axes"""
+        """
+        Attach a rectangle selector to an axes
+        """
 
         self.rect_selector = RectangleSelector(
             self.axes,
@@ -145,8 +149,12 @@ class EEGPlotWidget(QWidget):
         self.rect_selector.set_active(True)
 
     def select_callback(self, eclick, erelease):
-        """Callback for line selection.
-        *eclick* and *erelease* are the press and release events.
+        """
+        Callback for line selection.
+        Args:
+            eclick: press event
+            erelease: release event.
+
         https://matplotlib.org/stable/gallery/widgets/rectangle_selector.html
         """
         x1, y1 = eclick.xdata, eclick.ydata
@@ -162,9 +170,7 @@ class EEGPlotWidget(QWidget):
     def toggle_selector(self):
         if self.rect_selector and self.rect_selector.active:
             self.selected_label = 0
-            print(f"{self.selected_label=}")
 
-            self.rect_selector.set_active(False)
             rect = Rectangle(
                 (min(self.x1, self.x2), min(self.y1, self.y2)),
                 abs(self.x1 - self.x2),
@@ -176,9 +182,6 @@ class EEGPlotWidget(QWidget):
                 zorder=10,
             )
             label_selection_dialog = LabelDialog(self)
-
-            print(f"{self.y1 / self.eep.scale_factor}")
-            print(f"{self.y2 / self.eep.scale_factor}")
 
             first_ch = max(
                 0,
@@ -195,8 +198,6 @@ class EEGPlotWidget(QWidget):
                     math.floor(self.y2 / self.eep.scale_factor),
                 ),
             )
-            print(f"{first_ch=}")
-            print(f"{last_ch=}")
 
             selected_channels = list(config.montage_pairs.keys())[
                 first_ch : last_ch + 1
@@ -218,12 +219,13 @@ class EEGPlotWidget(QWidget):
                 )
                 self.text_annotations.append(text_ann)
                 self.axes.add_patch(rect)
-
-                print(f"{self.annotation=}")
+                # activate the undo button
+                self.controller.control_toolbar.undo_btn.setEnabled(True)
 
             self.canvas.draw()
 
     def render_saved_annotations(self):
+        """Read annotation json file and add patches to the figure"""
         if len(self.annotation) == 0:
             # do nothing
             return
@@ -261,52 +263,69 @@ class EEGPlotWidget(QWidget):
             self.axes.add_patch(rect)
 
         self.canvas.draw()
-
-        pass
+        return
 
     def undo_selection(self):
-        if len(self.annotation):
+        if len(self.text_annotations):
+            # set selector object to none
             self.rect_selector = None
+
+            # two path objects seem to be added to axes.patches
+            # need to pop twice to remove the drawen batch.
             self.axes.patches.pop()
             self.axes.patches.pop()
+            # remove annotation dict
             self.annotation.pop()
+
             last_annotation = self.text_annotations[-1]
             last_annotation.remove()
 
             self.text_annotations.pop()
             self.canvas.draw()
 
+        # if nothing to undo, then disable the undo button
+        if len(self.text_annotations) == 0:
+            self.controller.control_toolbar.undo_btn.setEnabled(False)
+
+        return
+
     def box_select(self):
         self.toggle_selector()
         self.attach_selector()
 
     def get_num_selectors(self):
-        print(f"{len(self.axes.patches)=}")
         return len(self.axes.patches)
 
-    def change_initial_x_lim(self, duration: int):
-        """Set the duration of signal visible on the figure at a time"""
+    def change_initial_x_lim(self, t: int):
+        """
+        Set the portion of the eeg signal that will be plotted
+        Args:
+            t (int): `t` seconds will be plotted at a time from a given starting position.
+        """
         # get the current x_lim value
         x_lim_min = self.axes.get_xlim()[0]
 
-        self.axes.set_xlim(x_lim_min, x_lim_min + duration)
+        self.axes.set_xlim(x_lim_min, x_lim_min + t)
         self.canvas.draw()
 
-    def goto_duration(self, duration: int, signal_duration: int):
-        """Move a `duration` seconds in the signal"""
-        # get the current display duration length
-        duration_length = self.axes.get_xlim()[1] - self.axes.get_xlim()[0]
+    def goto_duration(self, t: int, signal_duration: int):
+        """Move a `duration` seconds in the signal
+        Args:
+            t (int): plot starting from `t` seconds in the signal
+            signal_duration (int): length of the `eeg` signal in seconds
+        """
+        # get the current display time length
+        t_delta = self.axes.get_xlim()[1] - self.axes.get_xlim()[0]
 
-        duration = min(signal_duration - duration_length, duration)
+        t = min(signal_duration - t_delta, t)
 
         # move to `duration` seconds while keeping display limit
-        self.axes.set_xlim(duration, duration + duration_length)
+        self.axes.set_xlim(t, t + t_delta)
         self.canvas.draw()
 
     def save_annotation(self):
         if not len(self.annotation):
             # if empty do nothing
-            print("Empty")
             return
         # get the directory of the EEG file
         eeg_directory = os.path.dirname(self.controller.filename)
