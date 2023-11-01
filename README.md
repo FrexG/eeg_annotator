@@ -2,7 +2,7 @@
 
 EEG annotation tool written in Python and PyQt6. It uses MNE Python for EEG signal reading and processing.
 
-Current version of this app supports `.eeg` oro `.edf` formats.
+>Note: Current version of this app supports `.eeg` oro `.edf` formats.
 
 ![demo](icons/demo.gif)
 
@@ -24,8 +24,8 @@ Current version of this app supports `.eeg` oro `.edf` formats.
    ```
 
 2. Load your EEG data by clicking on the "Open" button.
-3. Use the "Bounding Rect Annotation" feature to annotate your data by pressing the `Select` button, left click and drag your mouse on the canvas to draw a rectangle selection.
-4. You can move and resize the rectangle as you wish. When finish press the `Select` button again to provide annotation to the selected region.
+3. Use the "Bounding Rect Annotation" feature to annotate your data by pressing the `Label` button, left click and drag your mouse on the canvas to draw a rectangle selection.
+4. You can move and resize the rectangle as you wish. When finish press the `Label` button again to provide annotation to the selected region.
 5. Save your annotations by clicking on the "Save Annotations" button.
 6. Use the left/right arrow keys to move through the EEG signal in time.
 
@@ -34,6 +34,7 @@ You can also change the bipolar montage type or add/remove labels in the `config
 ## Annotation
 - The annotation file is a `.json` file with the same name as the EEG file and is saved in the same directory as the source EEG file.
 - Each annotation file contains a list of dictionaries each describing a single selected region.
+- `new` If annotation file already exists for a given reading they will be rendered upon opening.
 
 ``` json 
 # example_annotation.json
