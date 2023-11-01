@@ -23,7 +23,7 @@ class ControlToolBar(QToolBar):
         self.undo_btn.setEnabled(False)
         self.undo_btn.clicked.connect(self.on_undo_clicked)
         # draw box btn
-        self.draw_selection_btn = QPushButton("Select")
+        self.draw_selection_btn = QPushButton("Label")
         self.draw_selection_btn.setIcon(QIcon("./icons/add-selection.png"))
         self.draw_selection_btn.setEnabled(False)
         self.draw_selection_btn.clicked.connect(self.on_selection_box_clicked)
@@ -72,7 +72,6 @@ class ControlToolBar(QToolBar):
 
     def on_selection_box_clicked(self):
         self.controller.eeg_plot_widget.box_select()
-        self.undo_btn.setEnabled(True)
 
     def on_spinner_value_changed(self, v):
         self.controller.eeg_plot_widget.change_initial_x_lim(v)
@@ -85,7 +84,6 @@ class ControlToolBar(QToolBar):
         )
 
     def on_undo_clicked(self):
-        print("Undo")
         if not self.controller.eeg_plot_widget.get_num_selectors():
             self.undo_btn.setEnabled(False)
             return
