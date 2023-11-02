@@ -2,7 +2,7 @@
 
 EEG annotation tool written in Python and PyQt6. It uses MNE Python for EEG signal reading and processing.
 
->Note: Current version of this app supports `.eeg` oro `.edf` formats.
+>Note: Current version of this app supports `.eeg` or `.edf` formats.
 
 ![demo](icons/demo.gif)
 
@@ -17,10 +17,11 @@ EEG annotation tool written in Python and PyQt6. It uses MNE Python for EEG sign
 
 ## Usage
 
-1. Run the following command to start the application:
+1. Change directory to `eeg_annotator` and run the following command to start the application:
 
    ``` bash
    python3 main.py
+
    ```
 
 2. Load your EEG data by clicking on the "Open" button.
