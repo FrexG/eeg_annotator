@@ -4,7 +4,7 @@ EEG annotation tool written in Python and PyQt6. It uses MNE Python for EEG sign
 
 >Note: Current version of this app supports `.eeg` or `.edf` formats.
 
-![demo](icons/demo.gif)
+![demo](eeg_annotator/icons/demo.gif)
 
 ## Installation
 
