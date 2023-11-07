@@ -94,9 +94,11 @@ class EEGPlot:
 
         axes.set_yticks(self.y_tick_pos)
         axes.set_yticklabels(channel_names)
+
         # disable yticks
         # axs.yaxis.set_major_locator(NullLocator())
         # axs.yaxis.set_minor_locator(NullLocator())
+
         return axes
 
     def plot_signal(self, raw_eeg, axes):

@@ -65,6 +65,7 @@ class EEGPlotWidget(QWidget):
         self.eep = eep
         self.annotation = []
         self.text_annotations = []
+        self.v_lines = []
 
         self.selectors = []
         layout = QVBoxLayout()
@@ -99,6 +100,24 @@ class EEGPlotWidget(QWidget):
         self.axes = self.eep.create_axes(self.fig, raw_eeg)
         self.eep.plot_signal(raw_eeg, self.axes)
 
+        self.draw_vertical_xtick()
+
+    def clear_v_lines(self):
+        num_lines = len(self.v_lines)
+        if num_lines:
+            # Clear all the vertical lines
+            for _ in range(num_lines):
+                self.v_lines.pop().remove()
+
+        self.draw_vertical_xtick()
+
+    def draw_vertical_xtick(self):
+        # Draw a vertical line at each xtick
+        xticks = self.axes.get_xticks()
+        for xtick in xticks:
+            v_line = self.axes.axvline(x=xtick, color="black", linestyle="--")
+            self.v_lines.append(v_line)
+
         self.canvas.draw()
 
     def on_enter_event(self, _):
@@ -127,7 +146,9 @@ class EEGPlotWidget(QWidget):
             x_lim_right = min(self.signal_duration, x_lim[1] + config.pan_ammount)
             # set the new x_limits of the plot
             self.axes.set_xlim(x_lim_left, x_lim_right)
-        self.canvas.draw()
+
+        self.draw_vertical_xtick()
+        # self.canvas.draw()
 
     def attach_selector(self):
         """
@@ -306,7 +327,8 @@ class EEGPlotWidget(QWidget):
         x_lim_min = self.axes.get_xlim()[0]
 
         self.axes.set_xlim(x_lim_min, x_lim_min + t)
-        self.canvas.draw()
+        self.draw_vertical_xtick()
+        # self.canvas.draw()
 
     def goto_duration(self, t: int, signal_duration: int):
         """Move a `duration` seconds in the signal
@@ -321,7 +343,8 @@ class EEGPlotWidget(QWidget):
 
         # move to `duration` seconds while keeping display limit
         self.axes.set_xlim(t, t + t_delta)
-        self.canvas.draw()
+        self.draw_vertical_xtick()
+        # self.canvas.draw()
 
     def save_annotation(self):
         if not len(self.annotation):

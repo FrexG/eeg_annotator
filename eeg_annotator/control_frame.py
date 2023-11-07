@@ -28,10 +28,14 @@ class ControlToolBar(QToolBar):
         self.draw_selection_btn.setEnabled(False)
         self.draw_selection_btn.clicked.connect(self.on_selection_box_clicked)
 
+        self.toggle_guide_btn = QPushButton("Grid")
+        self.toggle_guide_btn.clicked.connect(self.on_enable_grid)
+
         self.addWidget(self.open_file)
         self.addWidget(self.save_btn)
         self.addWidget(self.undo_btn)
         self.addWidget(self.draw_selection_btn)
+        self.addWidget(self.toggle_guide_btn)
         self.show()
 
     def show_controls(self, signal_duration):
@@ -88,3 +92,6 @@ class ControlToolBar(QToolBar):
             self.undo_btn.setEnabled(False)
             return
         self.controller.eeg_plot_widget.undo_selection()
+
+    def on_enable_grid(self):
+        self.controller.eeg_plot_widget.clear_v_lines()
