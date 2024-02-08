@@ -69,7 +69,7 @@ class EEGPlot:
                 sfreq=s_freq,
                 ch_types="eeg"
                 )
-        mne_data = mne.io.RawArray(eeg_df.values,info=mne_info,verbose=False)
+        mne_data = mne.io.RawArray(eeg_df.values.T,info=mne_info,verbose=False)
 
         return(
                 mne_data,signal_length_seconds
