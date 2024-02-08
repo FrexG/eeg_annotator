@@ -1,6 +1,7 @@
 import mne
 import math
 import numpy as np
+import pandas as pd
 from matplotlib.figure import Figure
 
 
@@ -29,7 +30,7 @@ class EEGPlot:
 
         return ax
 
-    def create_figure(self, n_subplots, figsize):
+    def create_figure(self, n_subplots, figsize): 
         # n_subplots default it to 19 for EEG
         fig = Figure(figsize=figsize, dpi=100)
         axes = self.create_axes(n_subplots, fig)
@@ -40,6 +41,39 @@ class EEGPlot:
         signal_length = raw_eeg.get_data().shape[-1]
 
         return signal_length / s_freq
+    
+    def read_excel(self,excel_path:str,s_freq:int = 256):
+        """ Read eeg data stored in excel format, specifically made for imports from `Haleluya Hospital` 
+            - this files don't have information about the sampling frequency (so it is assumed)
+            - contain patient and other unneeded info.
+            - are already stored in `Bipolar montage`, thus no conversion required
+            - have fewer channels (17)
+            args:
+                - excel_path(str): abs path to the excel file
+                - s_freq(int): sampling_frequenct, defaults to 256
+        """
+        print("Debug `read_excel`")
+        eeg_df = pd.read_excel(excel_path)
+        print(eeg_df.head())
+        # clean patient and other info
+        eeg_df = eeg_df.iloc[16:]
+        print("Cleaning patient data")
+        print(eeg_df.head())
+        # get channel names
+        channel_pair_names = eeg_df.columns.to_list()
+        # calcuate signal duration
+        signal_length_seconds = len(eeg_df) // s_freq
+        # convert signal to MNE format for compatibility
+        mne_info = mne.create_info(
+                ch_names=channel_pair_names,
+                sfreq=s_freq,
+                ch_types="eeg"
+                )
+        mne_data = mne.io.RawArray(eeg_df.values,info=mne_info,verbose=False)
+
+        return(
+                mne_data,signal_length_seconds
+                )
 
     def read_edf(self, edf_path: str, differential_array):
         """Read raw EEG signal stored in .edf format"""
