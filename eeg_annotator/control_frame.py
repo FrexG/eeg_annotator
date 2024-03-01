@@ -31,25 +31,9 @@ class ControlToolBar(QToolBar):
         self.toggle_guide_btn = QPushButton("Grid")
         self.toggle_guide_btn.clicked.connect(self.on_enable_grid)
 
-        self.addWidget(self.open_file)
-        self.addWidget(self.save_btn)
-        self.addWidget(self.undo_btn)
-        self.addWidget(self.draw_selection_btn)
-        self.addWidget(self.toggle_guide_btn)
-        self.show()
-
-    def show_controls(self, signal_duration):
-        self.signal_duration = signal_duration
         # display time(x-limit) controll
-        spinner_label = QLabel("Max display samples: ")
+        self.spinner_label = QLabel("Max display samples: ")
         self.x_lim_spinner = QSpinBox()
-        self.x_lim_spinner.setMinimum(5)
-        self.x_lim_spinner.setMaximum(signal_duration // 2)
-        self.x_lim_spinner.setValue(10)
-        self.x_lim_spinner.setSingleStep(5)
-
-        self.x_lim_spinner.setSuffix(" Seconds")
-        self.x_lim_spinner.valueChanged.connect(self.on_spinner_value_changed)
 
         # Goto a given seconds to a signal
         self.goto_input = QLineEdit()
@@ -62,11 +46,35 @@ class ControlToolBar(QToolBar):
         int_validator = QIntValidator()
         self.goto_input.setValidator(int_validator)
 
-        signal_duration_lbl = QLabel(f"Signal duration = {signal_duration} seconds")
-        self.addWidget(spinner_label)
+        self.signal_duration_lbl = QLabel()
+        self.sampling_freq_lbl = QLabel()
+
+        self.addWidget(self.open_file)
+        self.addWidget(self.save_btn)
+        self.addWidget(self.undo_btn)
+        self.addWidget(self.draw_selection_btn)
+        self.addWidget(self.toggle_guide_btn)
+        self.addWidget(self.spinner_label)
         self.addWidget(self.x_lim_spinner)
         self.addWidget(self.goto_input)
-        self.addWidget(signal_duration_lbl)
+        self.addWidget(self.signal_duration_lbl)
+        self.addWidget(self.sampling_freq_lbl)
+        self.show()
+
+    def show_controls(self, signal_duration, s_freq):
+        self.signal_duration = signal_duration
+        self.s_freq = s_freq
+
+        self.x_lim_spinner.setMinimum(5)
+        self.x_lim_spinner.setMaximum(signal_duration // 2)
+        self.x_lim_spinner.setValue(10)
+        self.x_lim_spinner.setSingleStep(5)
+        self.x_lim_spinner.setSuffix(" Seconds")
+        self.x_lim_spinner.valueChanged.connect(self.on_spinner_value_changed)
+
+        self.signal_duration_lbl.setText(f"Duration = {signal_duration}s")
+        self.sampling_freq_lbl.setText(f"Sampling Freq = {s_freq}hz")
+        self.show()
 
     def on_open_clicked(self):
         self.controller.open_file()

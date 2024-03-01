@@ -84,7 +84,8 @@ class EEGAnnotator(QMainWindow):
     def open_file(self):
         self.eeg_plot_widget.fig.clear()
         # Open a file dialog
-        file_filters = ".eeg/.EEG files (*.eeg *.EEG);;.edf/.EDF files (*.edf *.EDF)"
+        # file_filters = ".eeg/.EEG files (*.eeg *.EEG); ;.edf/.EDF files (*.edf *.EDF); ;.xlsx files (*.xlsx)"
+        file_filters = "*.eeg *.EEG *.edf *.EDF *.xlsx"
 
         self.filename = QFileDialog.getOpenFileName(self, filter=file_filters)[0]
 
@@ -104,20 +105,25 @@ class EEGAnnotator(QMainWindow):
             with open(annotation_file_path, "r") as f:
                 annotation = json.load(f)
 
+        if self.filename.lower().strip().endswith(".xlsx"):
+            self.raw_eeg, self.signal_duration, self.s_freq = self.eep.read_excel(
+                self.filename.strip(), 64
+            )
+
         if self.filename.lower().strip().endswith(".edf"):
-            self.raw_eeg, self.signal_duration = self.eep.read_edf(
+            self.raw_eeg, self.signal_duration, self.s_freq = self.eep.read_edf(
                 self.filename.strip(), config.montage_pairs
             )
 
         if self.filename.lower().strip().endswith(".eeg"):
-            self.raw_eeg, self.signal_duration = self.eep.read_eeg(
+            self.raw_eeg, self.signal_duration, self.s_freq = self.eep.read_eeg(
                 self.filename.strip(), config.montage_pairs
             )
 
         if self.raw_eeg:
             self.control_toolbar.draw_selection_btn.setEnabled(True)
             self.control_toolbar.save_btn.setEnabled(True)
-            self.control_toolbar.show_controls(self.signal_duration)
+            self.control_toolbar.show_controls(self.signal_duration, self.s_freq)
 
             # set the annotation
             self.eeg_plot_widget.annotation = annotation
