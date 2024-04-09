@@ -158,7 +158,7 @@ class EEGPlotWidget(QWidget):
         self.rect_selector = RectangleSelector(
             self.axes,
             self.select_callback,
-            drawtype="box",
+            #drawtype="box",
             useblit=True,
             button=[1],
             minspanx=5,
@@ -224,6 +224,8 @@ class EEGPlotWidget(QWidget):
                 first_ch : last_ch + 1
             ]
 
+           
+
             if label_selection_dialog.exec():
                 class_label = config.diagnosis[self.selected_label]
                 self.annotation.append(
@@ -242,6 +244,11 @@ class EEGPlotWidget(QWidget):
                 self.axes.add_patch(rect)
                 # activate the undo button
                 self.controller.control_toolbar.undo_btn.setEnabled(True)
+
+                print(f"========= SELECTED CHANNELS ========")
+                for ch in selected_channels:
+                    print(f"\t{ch}")
+                print(f"LABEL = {class_label}")
 
             self.canvas.draw()
 

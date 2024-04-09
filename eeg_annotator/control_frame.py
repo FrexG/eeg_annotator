@@ -66,14 +66,14 @@ class ControlToolBar(QToolBar):
         self.s_freq = s_freq
 
         self.x_lim_spinner.setMinimum(5)
-        self.x_lim_spinner.setMaximum(signal_duration // 2)
+        self.x_lim_spinner.setMaximum(int(signal_duration // 2))
         self.x_lim_spinner.setValue(10)
         self.x_lim_spinner.setSingleStep(5)
         self.x_lim_spinner.setSuffix(" Seconds")
         self.x_lim_spinner.valueChanged.connect(self.on_spinner_value_changed)
 
-        self.signal_duration_lbl.setText(f"Duration = {signal_duration}s")
-        self.sampling_freq_lbl.setText(f"Sampling Freq = {s_freq}hz")
+        self.signal_duration_lbl.setText(f"Duration:{signal_duration}s ")
+        self.sampling_freq_lbl.setText(f"S_Freq:{s_freq}hz")
         self.show()
 
     def on_open_clicked(self):
