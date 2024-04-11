@@ -85,7 +85,7 @@ class EEGAnnotator(QMainWindow):
         self.eeg_plot_widget.fig.clear()
         # Open a file dialog
         # file_filters = ".eeg/.EEG files (*.eeg *.EEG); ;.edf/.EDF files (*.edf *.EDF); ;.xlsx files (*.xlsx)"
-        file_filters = "*.eeg *.EEG *.edf *.EDF *.xlsx"
+        file_filters = "*.eeg *.EEG *.edf *.EDF *.xlsx *.fif *.FIF"
 
         self.filename = QFileDialog.getOpenFileName(self, filter=file_filters)[0]
 
@@ -117,6 +117,11 @@ class EEGAnnotator(QMainWindow):
 
         if self.filename.lower().strip().endswith(".eeg"):
             self.raw_eeg, self.signal_duration, self.s_freq = self.eep.read_eeg(
+                self.filename.strip(), config.montage_pairs
+            )
+
+        if self.filename.lower().strip().endswith(".fif"):
+            self.raw_eeg, self.signal_duration, self.s_freq = self.eep.read_fif(
                 self.filename.strip(), config.montage_pairs
             )
 
