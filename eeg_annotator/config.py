@@ -6,7 +6,7 @@ from typing import List, Dict, Tuple
 class Config:
     app_name: str = "Annotate"
     # diagnosis options
-    diagnosis = ("BCKG", "SCZ")
+    diagnosis = ("BCKG","TSCZ","FSCZ","PSCZ","GSCZ","OSCZ")
     montage_pairs = {
         "Fp1-F7": ("Fp1", "F7"),
         "F7-T3": ("F7", "T3"),
