@@ -95,6 +95,19 @@ class EEGPlot:
             self.get_s_freq(raw_eeg),
         )
 
+    def read_fif(self, fif_path: str, differential_array):
+        """Read raw EEG signal stored in .fif format"""
+        raw_fif = mne.io.read_raw_fif(fif_path, preload=True)
+
+        # add a low-pass filter
+        raw_fif.filter(None, 30.0, verbose=False)
+
+        return (
+            self.raw_to_bipolar(raw_fif, differential_array),
+            self.get_signal_length_seconds(raw_fif),
+            self.get_s_freq(raw_fif),
+        )
+
     def raw_to_bipolar(self, raw_eeg, channel_pair_dict):
         bipolar_diff = []
         channel_pair_names = []
