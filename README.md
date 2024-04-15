@@ -2,11 +2,11 @@
 
 EEG annotation tool written in Python and PyQt6. It uses MNE Python for EEG signal reading and processing.
 
->Note: Current version of this app supports `.eeg` or `.edf` formats.
+>Note: Current version of this app supports `.eeg`,`.edf` and `.fif` formats.
 
 ![demo](eeg_annotator/icons/demo.gif)
 
-## Setting up your environmet (Windows/Linux) 
+## Setting up your enviroment (Windows/Linux) 
 
 1. Clone the repo: `git clone https://github.com/FrexG/eeg_annotator.git` 
 2. Create a conda evironment (prefrable): `conda create -n eeg_annotator python=3.11.`
